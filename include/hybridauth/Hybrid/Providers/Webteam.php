@@ -6,9 +6,10 @@
 */
 
 /**
- * Hybrid_Providers_Vkontakte provider adapter based on OAuth2 protocol
- *
- * added by guiltar | https://github.com/guiltar
+ * Hybrid_Providers_Webteam provider adapter based on OAuth2 protocol
+ * Custom Client for a OAuth2 Server based on Symfony2 ; URL are dummies
+ * see FOSOAuthServerBundle for Symfony2
+ * added by Timothe Perez | https://github.com/AchilleAsh
  */
 
 class Hybrid_Providers_Webteam extends Hybrid_Provider_Model_OAuth2
@@ -75,7 +76,7 @@ class Hybrid_Providers_Webteam extends Hybrid_Provider_Model_OAuth2
 		$this->refreshToken();
 
 		
-		// ask Webteam api for user infos
+		// ask Webteam API for user information
 		$response = $this->api->api( "https://webteam-dev.ensea.fr/app_dev.php/api/profile" , 'GET');
 
 		if (!isset( $response ) || !isset( $response->{'id'} ) || isset( $response->error ) ){
@@ -90,22 +91,23 @@ class Hybrid_Providers_Webteam extends Hybrid_Provider_Model_OAuth2
 		$this->user->profile->photoURL      = (property_exists($response,'photo'))?$response->photo:"";
 		$this->user->profile->profileURL    = (property_exists($response,'id'))?"https://webteam-dev.ensea.fr/app_dev.php/profile/" . $response->id:"";
 
-		if(property_exists($response,'sex')){
+		if(property_exists($response,'gender')){
 			switch ($response->sex)
 			{
 				case 1: $this->user->profile->gender = 'female'; break;
-				case 2: $this->user->profile->gender = 'male'; break;
+				case 0: $this->user->profile->gender = 'male'; break;
 				default: $this->user->profile->gender = ''; break;
 			}
 		}
+        // To be reimplemented
 
-		if( property_exists($response,'bdate') ){
+		/*if( property_exists($response,'bdate') ){
 			list($birthday_year, $birthday_month, $birthday_day) = explode( '.', $response->bdate );
 
 			$this->user->profile->birthDay   = (int) $birthday_day;
 			$this->user->profile->birthMonth = (int) $birthday_month;
 			$this->user->profile->birthYear  = (int) $birthday_year;
-		}
+		}*/
 
 		return $this->user->profile;
 	}
