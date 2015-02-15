@@ -32,7 +32,7 @@ class OAuth2Client
 	public $curl_ssl_verifypeer      = false;
 	public $curl_header              = array();
 	public $curl_useragent           = "OAuth/2 Simple PHP Client v0.1; HybridAuth http://hybridauth.sourceforge.net/";
-	public $curl_authenticate_method = "POST";
+	public $curl_authenticate_method = "GET";
         public $curl_proxy               = null;
 
 	//--
@@ -73,13 +73,16 @@ class OAuth2Client
 			"redirect_uri"  => $this->redirect_uri,
 			"code"          => $code
 		);
-	
 		$response = $this->request( $this->token_url, $params, $this->curl_authenticate_method );
 		
 		$response = $this->parseRequestResult( $response );
 
-		if( ! $response || ! isset( $response->access_token ) ){
-			throw new Exception( "The Authorization Service has return: " . $response->error );
+		if( ! $response ) {
+			throw new Exception( "1 The Authorization Service has return: " . $response->error );
+		}
+		
+		if( ! isset( $response->access_token ) ){
+			throw new Exception( "2 The Authorization Service has return: " . $response->error );
 		}
 
 		if( isset( $response->access_token  ) )  $this->access_token           = $response->access_token;

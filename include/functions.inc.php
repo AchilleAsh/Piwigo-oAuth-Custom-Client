@@ -38,7 +38,7 @@ function oauth_assign_template_vars($u_redirect=null)
         $persona_email = $identifier;
       }
     }
-    
+
     $template->assign('OAUTH', array(
       'conf' => $conf['oauth'],
       'u_login' => get_root_url() . OAUTH_PATH . 'auth.php?provider=',
@@ -96,40 +96,118 @@ function get_servername($with_port=false)
   return $servername;
 }
 
-// http://www.sitepoint.com/authenticate-users-with-mozilla-persona/
-function persona_verify()
+
+
+/**
+ * Creates a new user (use to bypass the register page if disabled)
+ *
+ * @param string $login
+ * @param string $password
+ * @param string $mail_address
+ * @param bool $notify_admin
+ * @param array &$errors populated with error messages
+ * @param bool $notify_user
+ * @return int|false user id or false
+ */
+function oauth_register_user($login, $password, $mail_address, $errors = array())
 {
-  $url = 'https://verifier.login.persona.org/verify';
+  global $conf;
 
-  $assert = filter_input(
-    INPUT_POST,
-    'assertion',
-    FILTER_UNSAFE_RAW,
-    FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH
-    );
-
-  $params = 'assertion=' . urlencode($assert) . '&audience=' . urlencode(get_servername(true));
-
-  $options = array(
-    CURLOPT_URL => $url,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => $params,
-    CURLOPT_SSL_VERIFYPEER => true,
-    CURLOPT_SSL_VERIFYHOST => 2,
-    );
-
-  $ch = curl_init();
-  curl_setopt_array($ch, $options);
-  $result = curl_exec($ch);
-  curl_close($ch);
-  
-  if ($result === false)
+  if ($login == '')
   {
-    return false;
+    $errors[] = l10n('Please, enter a login');
+  }
+  if (preg_match('/^.* $/', $login))
+  {
+    $errors[] = l10n('login mustn\'t end with a space character');
+  }
+  if (preg_match('/^ .*$/', $login))
+  {
+    $errors[] = l10n('login mustn\'t start with a space character');
+  }
+  /* if (get_userid($login))
+  {
+    $errors[] = l10n('this login is already used');
+  } */
+  if ($login != strip_tags($login))
+  {
+    $errors[] = l10n('html tags are not allowed in login');
+  }
+  $mail_error = validate_mail_address(null, $mail_address);
+  if ('' != $mail_error)
+  {
+    $errors[] = $mail_error;
+  }
+
+  if ($conf['insensitive_case_logon'] == true)
+  {
+    $login_error = validate_login_case($login);
+    if ($login_error != '')
+    {
+      $errors[] = $login_error;
+    }
+  }
+
+  $errors = trigger_change(
+      'register_user_check',
+      $errors,
+      array(
+          'username'=>$login,
+          'password'=>$password,
+          'email'=>$mail_address,
+      )
+  );
+
+  // if no error until here, registration of the user
+  if (count($errors) == 0)
+  {
+    $insert = array(
+        $conf['user_fields']['username'] => pwg_db_real_escape_string($login),
+        $conf['user_fields']['password'] => $conf['password_hash']($password),
+        $conf['user_fields']['email'] => $mail_address
+    );
+
+    single_insert(USERS_TABLE, $insert);
+    $user_id = pwg_db_insert_id();
+
+    // Assign by default groups
+    $query = '
+SELECT id
+  FROM '.GROUPS_TABLE.'
+  WHERE is_default = \''.boolean_to_string(true).'\'
+  ORDER BY id ASC
+;';
+    $result = pwg_query($query);
+
+    $inserts = array();
+    while ($row = pwg_db_fetch_assoc($result))
+    {
+      $inserts[] = array(
+          'user_id' => $user_id,
+          'group_id' => $row['id']
+      );
+    }
+
+    if (count($inserts) != 0)
+    {
+      mass_inserts(USER_GROUP_TABLE, array('user_id', 'group_id'), $inserts);
+    }
+    create_user_infos($user_id, null);
+
+
+    trigger_notify(
+        'register_user',
+        array(
+            'id'=>$user_id,
+            'username'=>$login,
+            'email'=>$mail_address,
+        )
+    );
+
+    return $user_id;
   }
   else
   {
-    return json_decode($result, true);
+    return false;
   }
 }

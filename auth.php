@@ -2,7 +2,12 @@
 define('PHPWG_ROOT_PATH', '../../');
 include_once(PHPWG_ROOT_PATH.'include/common.inc.php');
 
-global $hybridauth_conf;
+global $hybridauth_conf, $page;
+
+//*****************************
+// True : override disabled Piwigo registration
+$override_registration = true;
+//****************************
 
 // OpenID is always enabled
 $hybridauth_conf['providers']['OpenID']['enabled'] = true;
@@ -19,29 +24,7 @@ try {
     throw new Exception('Invalid provider!', 1002);
   }
   
-  if ($provider == 'Persona')
-  {
-    if (!verify_ephemeral_key(@$_POST['key']) || empty($_POST['assertion']))
-    {
-      header('HTTP/1.1 403 Forbidden');
-      exit;
-    }
-    
-    $response = persona_verify($_POST['assertion']);
-    
-    if ($response === false || $response['status'] != 'okay')
-    {
-      header('HTTP/1.1 503 Service Unavailable');
-      echo json_encode($response);
-      exit;
-    }
-    else
-    {
-      $oauth_id = array($provider, $response['email']);
-    }
-  }
-  else
-  {
+
     if ($provider == 'OpenID' and empty($_GET['openid_identifier']))
     {
       throw new Exception('Invalid OpenID!', 1003);
@@ -53,10 +36,10 @@ try {
     {
       $adapter = $hybridauth->getAdapter($provider);
       $remote_user = $adapter->getUserProfile();
-      
+      $user_identifier = $remote_user->identifier;
       $oauth_id = array($provider, $remote_user->identifier);
     }
-  }
+
   
   // connected
   if (!empty($oauth_id))
@@ -79,17 +62,45 @@ SELECT user_id FROM ' . USER_INFOS_TABLE . '
     // not registered : redirect to register page
     else
     {
-      if ($conf['allow_user_registration'])
-      {
-        pwg_set_session_var('oauth_new_user', $oauth_id);
-        $redirect_to = 'register';
-      }
-      else
-      {
-        $_SESSION['page_errors'][] = l10n('Sorry, new registrations are blocked on this gallery.');
-        if (isset($adapter)) $adapter->logout();
-        $redirect_to = 'identification';
-      }
+        if($override_registration) {
+            // to customize depending on your remote user data structure
+            $username = $remote_user->displayName;
+            $mail = $remote_user->email;
+
+            $oauth_id = $provider . '---' . $user_identifier;
+            $user_id = oauth_register_user(
+                $username,
+                hash('sha1', $oauth_id . $conf['secret_key']),
+                $mail,
+                $page['errors']
+            );
+
+            if ($user_id !== false) {
+                pwg_unset_session_var('oauth_new_user');
+
+                // update oauth field
+                $query = '
+                    UPDATE ' . USER_INFOS_TABLE . '
+                      SET oauth_id = "' . $oauth_id . '"
+                      WHERE user_id = ' . $user_id . '
+                    ;';
+                pwg_query($query);
+
+                // log_user and redirect
+                log_user($user_id, false);
+                $redirect_to = 'profile';
+            }
+        }
+        else {
+            if ($conf['allow_user_registration']) {
+                pwg_set_session_var('oauth_new_user', $oauth_id);
+                $redirect_to = 'register';
+            } else {
+                $_SESSION['page_errors'][] = l10n('Sorry, new registrations are blocked on this gallery.');
+                if (isset($adapter)) $adapter->logout();
+                $redirect_to = 'identification';
+            }
+        }
     }
     
     if ($provider == 'Persona')
@@ -151,7 +162,7 @@ catch (Exception $e)
     case 404:
       $template->assign('ERROR', l10n('User not found')); break;
     default:
-      $template->assign('ERROR', l10n('An error occured, please contact the gallery owner. <i>Error code : %s</i>', '<span title="'.$e->getMessage().'">'.$e->getCode().'</span>'));
+      $template->assign('ERROR', l10n('An error occured, please contact the gallery owner. <i>Error code : %s</i>', '<span title="'.$e->getMessage().'">'.$e->getMessage().'</span>'));
   }
 }
 
@@ -168,3 +179,5 @@ $template->assign(array(
 
 $template->set_filename('index', realpath(OAUTH_PATH . 'template/auth.tpl'));
 $template->pparse('index');
+
+

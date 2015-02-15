@@ -63,3 +63,34 @@
 .oauth_38px.persona { background-position: -456px 0px; }
 .oauth_38px.px500 { background-position: -494px 0px; }
 .oauth_38px.vkontakte { background-position: -532px 0px; }
+
+.oauth_webteam {
+  background: #b7004f;
+  background-image: -webkit-linear-gradient(top, #b7004f, #db0766);
+  background-image: -moz-linear-gradient(top, #b7004f, #db0766);
+  background-image: -ms-linear-gradient(top, #b7004f, #db0766);
+  background-image: -o-linear-gradient(top, #b7004f, #db0766);
+  background-image: linear-gradient(to bottom, #b7004f, #db0766);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  font-family: Georgia;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+}
+
+.oauth_webteam:hover {
+  background: #d1004d;
+  background-image: -webkit-linear-gradient(top, #d1004d, #85001b);
+  background-image: -moz-linear-gradient(top, #d1004d, #85001b);
+  background-image: -ms-linear-gradient(top, #d1004d, #85001b);
+  background-image: -o-linear-gradient(top, #d1004d, #85001b);
+  background-image: linear-gradient(to bottom, #d1004d, #85001b);
+  text-decoration: none;
+}
+
+FORM#quickconnect {
+  display: none;
+}

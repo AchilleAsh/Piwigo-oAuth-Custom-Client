@@ -110,36 +110,10 @@ jQuery(".open-help").click(function() {
         <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Website URL</b>':$WEBSITE}</li>
         <li>{'Set <b>%1s</b> to <em>%2s</em>'|translate:'Default Scope':'r_basicprofile & r_emailaddress'}</li>
         <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'OAuth 2.0 Redirect URLs'}</li>
-      
-      {elseif $p=='Tumblr'}
-        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Application website</b>':$WEBSITE}</li>
-        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'Default callback URL'}</li>
-      
-      {elseif $p=='Twitter'}
-        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Website</b>':$WEBSITE}</li>
-        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'Callback URL'}</li>
-      
-      {elseif $p=='Live'}
-        <li>{'Go to <b>API Parameters</b> and set <em>%s</em> for <b>Redirect URL</b>'|translate:$WEBSITE}
-        
-      {elseif $p=='Vkontakte'}
-        <li>{'Set <b>%1s</b> to <em>%2s</em>'|translate:'Category':'Website'}</li>
-        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$WEBSITE:'Site address'}</li>
-        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Base domain</b>':$SERVERNAME}</li>
-        <li>{'Go to the <b>Settings</b> tab after creating the app'|translate}</li>
-      
-      {elseif $p=='Yahoo'}
-        <li>{'Set <b>%1s</b> to <em>%2s</em>'|translate:'Kind of Application':'Web-based'}</li>
-        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Home Page URL</b>':$WEBSITE}</li>
-        <li>{'Set <b>%1s</b> to <em>%2s</em>'|translate:'Access Scopes':'This app requires access to private user data'}</li>
-        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'Callback Domain'}</li>
-        <li>{'Select these APIs: <b>Contacts</b> as <em>Read</em> and <b>Social Directory</b> as <em>Read Public</em>'|translate}</li>
-      
-      {elseif $p=='px500'}
-        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Application URL</b>':$WEBSITE}</li>
-        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'Callback URL'}</li>
-        <li>{'Once the application is created, click <b>See application details</b>'|translate}</li>
-      
+
+      {elseif $p=='Webteam'}
+        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Website URL</b>':$WEBSITE}</li>
+        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'OAuth 2.0 Redirect URLs'}</li>
       {/if}
       
         <li>{'Once you have registered, copy and past the created application credentials into this setup page'|translate}</li>
