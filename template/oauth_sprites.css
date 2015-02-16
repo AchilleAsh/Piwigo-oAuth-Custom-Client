@@ -64,6 +64,26 @@
 .oauth_38px.px500 { background-position: -494px 0px; }
 .oauth_38px.vkontakte { background-position: -532px 0px; }
 
+.oauth_16px.webteam {
+    display:inline-block;
+    background:url('images/webteam_16.png') 16px 0;
+    width:16px;
+    height:16px;
+}
+
+.oauth_26px.webteam {
+    display:inline-block;
+    background:url('images/webteam_26.png') 26px 0;
+    width:26px;
+    height:26px;
+}
+.oauth_38px.webteam {
+    display:inline-block;
+    background:url('images/webteam_38.png') 38px 0;
+    width:38px;
+    height:38px;
+}
+
 .oauth_webteam {
   background: #b7004f;
   background-image: -webkit-linear-gradient(top, #b7004f, #db0766);
