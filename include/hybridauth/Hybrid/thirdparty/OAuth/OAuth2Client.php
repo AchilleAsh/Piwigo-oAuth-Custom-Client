@@ -32,7 +32,7 @@ class OAuth2Client
 	public $curl_ssl_verifypeer      = false;
 	public $curl_header              = array();
 	public $curl_useragent           = "OAuth/2 Simple PHP Client v0.1; HybridAuth http://hybridauth.sourceforge.net/";
-	public $curl_authenticate_method = "GET";
+	public $curl_authenticate_method = "POST";
         public $curl_proxy               = null;
 
 	//--
