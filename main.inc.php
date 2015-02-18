@@ -1,14 +1,26 @@
 <?php 
 /*
 Plugin Name: oAuth Custom Client
-Version: 1.0
-Description: Fully based on Social Connect Piwigo Plugin. Implements a custom oAuth client
+Plugin URI:
+Version: 1.0.0
+Description: Fully based on Social Connect Piwigo Plugin. Implements a custom oAuth2 client
 Author: Timothe Perez for Webteam ENSEA
-Author URI: http://webteam.ensea.fr
+Author URI: https://webteam.ensea.fr
 */
 
 defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
 
+if (basename(dirname(__FILE__)) != 'oAuth')
+{
+    add_event_handler('init', 'oauth_error');
+    function oauth_error()
+    {
+        global $page;
+        $page['errors'][] = 'Social Connect folder name is incorrect, uninstall the plugin and rename it to "oAuth"';
+    }
+    return;
+}
+define('OAUTH_PLUGIN_NAME',    'oAuth Webteam');
 define('OAUTH_ID',     basename(dirname(__FILE__)));
 define('OAUTH_PATH' ,  PHPWG_PLUGINS_PATH . OAUTH_ID . '/');
 define('OAUTH_ADMIN',  get_root_url() . 'admin.php?page=plugin-' . OAUTH_ID);

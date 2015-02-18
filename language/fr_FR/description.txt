@@ -1,1 +1,1 @@
-Fournit diverses manières de se connecter à la galerie (Twitter, Facebook, Google, etc.)
+Fournit un client oAuth2 personnalisé (Webteam ENSEA). Basé sur le plugin original Social Connect.

@@ -36,7 +36,7 @@ jQuery(".open-help").click(function() {
 
 
 <div class="titrePage">
-	<h2>Social Connect</h2>
+	<h2>oAuth Webteam ENSEA</h2>
 </div>
 
 <div id="help_container">
@@ -101,15 +101,6 @@ jQuery(".open-help").click(function() {
         <li>{'Set <b>%1s</b> to <em>%2s</em>'|translate:'Application Type':'Web Application'}</li>
         <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Authorized Javascript origins</b>':$SERVERNAME}</li>
         <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'Authorized redirect URI'}</li>
-      
-      {elseif $p=='Instagram'}
-        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Website</b>':$WEBSITE}</li>
-        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'OAuth redirect_uri'}</li>
-        
-      {elseif $p=='LinkedIn'}
-        <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Website URL</b>':$WEBSITE}</li>
-        <li>{'Set <b>%1s</b> to <em>%2s</em>'|translate:'Default Scope':'r_basicprofile & r_emailaddress'}</li>
-        <li>{'Enter <em>%1s</em> for <b>%2s</b>'|translate:$callback_url:'OAuth 2.0 Redirect URLs'}</li>
 
       {elseif $p=='Webteam'}
         <li>{'Put your website domain in the <b>%1s</b> field. It must match with the current hostname: <em>%2s</em>'|translate:'<b>Website URL</b>':$WEBSITE}</li>

@@ -4,7 +4,7 @@ defined('OAUTH_PATH') or die('Hacking attempt!');
 function oauth_admin_plugin_menu_links($menu) 
 {
   $menu[] = array(
-    'NAME' => 'Social Connect',
+    'NAME' => OAUTH_PLUGIN_NAME,
     'URL' => OAUTH_ADMIN,
     );
   return $menu;
