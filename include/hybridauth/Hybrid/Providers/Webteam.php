@@ -25,8 +25,8 @@ class Hybrid_Providers_Webteam extends Hybrid_Provider_Model_OAuth2
 		parent::initialize();
 
 		// Provider api end-points
-		$this->api->authorize_url  = "https://webteam-dev.ensea.fr/app_dev.php/oauth/v2/auth";
-		$this->api->token_url      = "https://webteam-dev.ensea.fr/app_dev.php/oauth/v2/token";
+		$this->api->authorize_url  = "https://webteam-dev.ensea.fr/oauth/v2/auth";
+		$this->api->token_url      = "https://webteam-dev.ensea.fr/oauth/v2/token";
 		//$this->api->token_info_url
 	}
 
@@ -77,7 +77,7 @@ class Hybrid_Providers_Webteam extends Hybrid_Provider_Model_OAuth2
 
 		
 		// ask Webteam API for user information
-		$response = $this->api->api( "https://webteam-dev.ensea.fr/app_dev.php/api/profile" , 'GET');
+		$response = $this->api->api( "https://webteam-dev.ensea.fr/api/profile" , 'GET');
 
 		if (!isset( $response ) || !isset( $response->{'id'} ) || isset( $response->error ) ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an invalid response.", 6 );
@@ -85,11 +85,12 @@ class Hybrid_Providers_Webteam extends Hybrid_Provider_Model_OAuth2
 
 		//$response = $response->response[0];
 		$this->user->profile->identifier    = (property_exists($response,'id'))?$response->id:"";
+        $this->user->profile->email         = (property_exists($response,'mail'))?$response->email:"";
 		$this->user->profile->firstName     = (property_exists($response,'firstName'))?$response->firstName:"";
 		$this->user->profile->lastName      = (property_exists($response,'lastName'))?$response->lastName:"";
 		$this->user->profile->displayName   = (property_exists($response,'username'))?$response->username:"";
 		$this->user->profile->photoURL      = (property_exists($response,'photo'))?$response->photo:"";
-		$this->user->profile->profileURL    = (property_exists($response,'id'))?"https://webteam-dev.ensea.fr/app_dev.php/profile/" . $response->id:"";
+		$this->user->profile->profileURL    = (property_exists($response,'id'))?"https://webteam-dev.ensea.fr/profile/" . $response->id:"";
 
 		if(property_exists($response,'gender')){
 			switch ($response->sex)

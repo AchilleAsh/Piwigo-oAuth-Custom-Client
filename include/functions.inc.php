@@ -125,10 +125,10 @@ function oauth_register_user($login, $password, $mail_address, $errors = array()
   {
     $errors[] = l10n('login mustn\'t start with a space character');
   }
-  /* if (get_userid($login))
+  if (get_userid($login))
   {
     $errors[] = l10n('this login is already used');
-  } */
+  }
   if ($login != strip_tags($login))
   {
     $errors[] = l10n('html tags are not allowed in login');
